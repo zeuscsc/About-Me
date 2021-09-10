@@ -7,7 +7,7 @@ Hope to work in company like Google and SpaceX.
 It is my portfolio site/maze.  You can type [help] for start
 
 ### Some fun fact for programming
-[Why 0.1 + 0.2 ≠ 0.3](fun-facts/why0.1%2B0.2≠0.3)
+[Why 0.1 + 0.2 ≠ 0.3](fun-facts/why0.1%2B0.2≠0.3)<br>
 [Why people can have secret chat even when they tell everybody how they cipher their message?](fun-facts/rsa)
 
 ### Some projects created by me
