@@ -1,5 +1,5 @@
 # About Me
-I want to be inventor, currently trying Foobar with Google Challenge.  Working on AI research, government and NGO projects, programming instructor for a living.  I was also a startup owner :sweat_smile:.
+I want to be inventor, currently trying Foobar with Google Challenge.  I am an AI researcher that works on government and NGO projects. At the same time I teach program for a living, a programming instructor.  I was also a startup owner :sweat_smile:.
 Hope to work in company like Google and SpaceX.
 
 
