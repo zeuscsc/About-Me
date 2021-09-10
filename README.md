@@ -16,6 +16,9 @@ It is my portfolio site/maze.  You can type [help] for start
 ### Some fun fact for programming
 [Why 0.1 + 0.2 ≠ 0.3](fun-facts/why0.1%2B0.2≠0.3.md)
 
+### Old School projects
+[![Interact with Hologram using Kinect](https://img.youtube.com/vi/L1SK9zfrWsI/0.jpg)](https://www.youtube.com/watch?v=L1SK9zfrWsI)
+
 ### I like: 
 1. Research
 1. Computer Games
