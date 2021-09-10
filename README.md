@@ -14,7 +14,7 @@ It is my portfolio site/maze.  You can type [help] for start
 [![Homi](https://img.youtube.com/vi/KHTqk1WxZWg/0.jpg)](https://youtu.be/KHTqk1WxZWg)
 
 ### Some fun fact for programming
-[Why 0.1 + 0.2 ≠ 0.3](fun-fact/why0.1%2B0.2≠0.3.md)
+[Why 0.1 + 0.2 ≠ 0.3](fun-facts/why0.1%2B0.2≠0.3.md)
 
 ### I like: 
 1. Research
