@@ -14,6 +14,10 @@ It is my portfolio site/maze.  You can type [help] for start
 [![Zeus ಡ ͜ ʖ ಡ](https://yt3.ggpht.com/ytc/AKedOLQCeXyZ-H78LrQPG76yuUqMcSAaXlBjZ9Glrt5v=s176-c-k-c0x00ffffff-no-rj)](https://www.youtube.com/channel/UC1XwXKPSpWLBZ2VuWKM8KTQ)
 
 ### Some projects created by me
+#### Drums Music Nodes Extractor
+Recreate drum nodes from music audio for drum players practice.
+[![Drums Music Nodes Extractor](https://img.youtube.com/vi/RJ6luQch6wI/0.jpg)][https://youtu.be/RJ6luQch6wI]
+
 #### 留聲語城大實試
 [![留聲語城大實試](https://img.youtube.com/vi/SXyY89qNsKg/0.jpg)](https://youtu.be/SXyY89qNsKg)
 
