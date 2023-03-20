@@ -35,3 +35,4 @@
 這次我加入了一些來自Interrogator的Prompts，並切換到Realistic_Vision_V1.4模型，結果是：
 ![](https://github.com/zeuscsc/About-Me/blob/main/blogs/assets/fighter_jet_demo_screenshot.png?raw=true)
 如果你想要更精確的飛行器或更類似歷史圖像，你可以尋找一些圖像並進行訓練。我可以在未來提供更多相關的訊息。
+![](https://github.com/zeuscsc/About-Me/blob/main/blogs/assets/train_aircraft_demo.png?raw=true)
