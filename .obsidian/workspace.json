@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "082b6d8ecf0ddc9e",
+        "id": "b2eeb8a332338945",
         "type": "tabs",
         "children": [
           {
-            "id": "727820d5cb7f7802",
+            "id": "edd9d5bfadd4fcba",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -146,10 +138,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "727820d5cb7f7802",
+  "active": "edd9d5bfadd4fcba",
   "lastOpenFiles": [
-    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321161445.png",
+    "blogs/解決 Stable Diffusion 初學者的硬件限制/assets/如何解決  Stable Diffusion 初學者的硬件限制.png",
+    "blogs/解決 Stable Diffusion 初學者的硬件限制/assets",
+    "blogs/如何使用（Stable Diffusion）來創造你童年的幻想/如何使用（Stable Diffusion）來創造你童年的幻想.md",
+    "blogs/解決 Stable Diffusion 初學者的硬件限制",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
+    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321161445.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/00420-518391835.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321161353.png",
     "Pasted image 20230321155933.png",
@@ -160,7 +156,6 @@
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/00027 - Copy.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/wine_mask - Copy.png",
     "README.md",
-    "blogs/如何使用（Stable Diffusion）來創造你童年的幻想/如何使用（Stable Diffusion）來創造你童年的幻想.md",
     "blogs/如何使用（Stable Diffusion）來創造你童年的幻想",
     "00027 - Copy.png.md",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets",
