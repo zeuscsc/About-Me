@@ -11,8 +11,12 @@
             "id": "edd9d5bfadd4fcba",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -97,6 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +124,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md"
+              }
             }
           }
         ]
@@ -140,11 +148,17 @@
   },
   "active": "edd9d5bfadd4fcba",
   "lastOpenFiles": [
+    "blogs/Untitled/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器。.md",
+    "blogs/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器。.md",
+    "blogs/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器.png",
+    "blogs/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器",
+    "blogs/Untitled/為什麼一個專業的 Stable Diffusion 使用者不會選擇 Google Colab 作為他們的生產伺服器.png",
+    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
+    "blogs/Untitled",
+    "blogs/如何使用（Stable Diffusion）來創造你童年的幻想/如何使用（Stable Diffusion）來創造你童年的幻想.md",
     "blogs/解決 Stable Diffusion 初學者的硬件限制/assets/如何解決  Stable Diffusion 初學者的硬件限制.png",
     "blogs/解決 Stable Diffusion 初學者的硬件限制/assets",
-    "blogs/如何使用（Stable Diffusion）來創造你童年的幻想/如何使用（Stable Diffusion）來創造你童年的幻想.md",
     "blogs/解決 Stable Diffusion 初學者的硬件限制",
-    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。.md",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321161445.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/00420-518391835.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321161353.png",
@@ -152,9 +166,6 @@
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321154002.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321144929.png",
     "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Pasted image 20230321144338.png",
-    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/Inpaint_screenshot - Copy.png",
-    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/00027 - Copy.png",
-    "blogs/商家或設計師嘅好工具 - 使用 Stable Diffusion 為你嘅產品營造氛圍。/assets/wine_mask - Copy.png",
     "README.md",
     "blogs/如何使用（Stable Diffusion）來創造你童年的幻想",
     "00027 - Copy.png.md",
