@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="preview-sd.png"> <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:image" content="preview-sd.png"> <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <title>Retirement Runway Calculator</title>
+    <style>
+        :root {
+            --primary: #10b981; /* Green for "Go" */
+            --danger: #ef4444;  /* Red for "Stop" */
+            
+            /* Dark Mode Colors */
+            --bg: #111827;
+            --card-bg: #1f2937;
+            --text: #f9fafb;
+            --text-muted: #9ca3af;
+            
+            --input-bg: #374151;
+            --input-border: #4b5563;
+            --input-text: #f9fafb;
+            --input-placeholder: #9ca3af;
+            
+            /* Finite = Warning (Yellow) */
+            --result-bg: #422006;
+            --result-border: #854d0e;
+            --result-text: #fde047;
+            --result-main: #facc15;
+            
+            /* Forever = Success (Green) */
+            --forever-bg: #064e3b;
+            --forever-border: #065f46;
+            --forever-text: #a7f3d0;
+            --forever-main: #34d399;
+            
+            --border-color: #374151;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .calculator-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 10px 12px 10px 30px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--input-placeholder);
+            opacity: 0.7;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .input-wrapper.percent input {
+            padding: 10px 30px 10px 12px;
+        }
+        .input-wrapper.percent span {
+            left: auto;
+            right: 12px;
+        }
+
+        /* Hide spinners in Chrome/Safari/Edge */
+        .input-wrapper input::-webkit-outer-spin-button,
+        .input-wrapper input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #059669;
+        }
+
+        .results {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Grid for 3 scenarios */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .scenario-card {
+            background: var(--input-bg);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scenario-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .scenario-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* Color coding for scenarios */
+        .sc-pessimistic .scenario-label { color: #f87171; } /* Red-ish */
+        .sc-expected .scenario-label { color: #60a5fa; }    /* Blue-ish */
+        .sc-optimistic .scenario-label { color: #34d399; }  /* Green-ish */
+
+        .result-main {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .result-sub {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .details {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            text-align: left;
+        }
+
+        /* Portfolio List Styles */
+        .portfolio-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .portfolio-row .input-wrapper {
+            flex: 1;
+        }
+        /* Adjust flex for 3 inputs */
+        .portfolio-row .input-wrapper:nth-child(1) { flex: 1.2; } /* Amount */
+        .portfolio-row .input-wrapper:nth-child(2) { flex: 0.8; } /* Return */
+        .portfolio-row .input-wrapper:nth-child(3) { flex: 0.8; } /* Risk */
+        .remove-btn {
+            background: var(--danger);
+            width: auto;
+            padding: 0 12px;
+            margin: 0;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .remove-btn:hover {
+            background-color: #dc2626;
+        }
+        .add-btn {
+            background-color: #4b5563;
+            font-size: 0.9rem;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .add-btn:hover {
+            background-color: #374151;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>Retirement Runway</h2>
+    <p class="subtitle">If you quit today, how long until you hit $0?</p>
+
+    <div class="input-group">
+        <label>Portfolios (Amount | Return | Variability)</label>
+        <div id="portfolio-list">
+            <!-- Dynamic rows go here -->
+        </div>
+        <button class="add-btn" onclick="addPortfolioRow()">+ Add Portfolio</button>
+    </div>
+
+    <div class="input-group" style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+        <label>Portfolio Tools</label>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="toggleImport()" style="background-color: #6366f1; margin-top: 0;">Import JSON</button>
+        </div>
+        <div id="importArea" style="display: none; margin-top: 10px;">
+            <textarea id="jsonInput" rows="5" style="width: 100%; background: var(--input-bg); color: var(--text); border: 1px solid var(--input-border); border-radius: 6px; padding: 10px; font-family: monospace;" placeholder="Paste JSON here..."></textarea>
+            <button onclick="applyJson()" style="margin-top: 5px;">Apply JSON</button>
+        </div>
+    </div>
+
+    <div class="summary-row">
+        <span>Total: <strong id="displayTotalSavings">$0</strong></span>
+        <span>Avg Return: <strong id="displayAvgReturn">0%</strong> (±<span id="displayAvgRisk">0%</span>)</span>
+    </div>
+
+    <div class="input-group">
+        <label for="expenses">Monthly Spending (Today's Cost)</label>
+        <div class="input-wrapper">
+            <span>$</span>
+            <input type="number" id="expenses" placeholder="4000" oninput="calculateRunway()">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="inflation">Annual Inflation</label>
+        <div class="input-wrapper percent">
+            <span>%</span>
+            <input type="number" id="inflation" placeholder="3" step="0.1" value="3" oninput="calculateRunway()">
+        </div>
+    </div>
+
+    <div class="results" id="resultsArea">
+        <div class="result-sub">Runway Scenarios</div>
+        
+        <div class="scenarios-grid">
+            <div class="scenario-card sc-pessimistic">
+                <div class="scenario-label">Pessimistic</div>
+                <div class="scenario-value" id="resPessimistic">-</div>
+            </div>
+            <div class="scenario-card sc-expected">
+                <div class="scenario-label">Expected</div>
+                <div class="scenario-value" id="resExpected">-</div>
+            </div>
+            <div class="scenario-card sc-optimistic">
+                <div class="scenario-label">Optimistic</div>
+                <div class="scenario-value" id="resOptimistic">-</div>
+            </div>
+        </div>
+
+        <div class="details" id="detailsText"></div>
+    </div>
+
+    <button id="shareBtn" onclick="shareResults()" style="display: none; margin-top: 1rem; background-color: #3b82f6;">
+        Share this Scenario
+    </button>
+    <button id="jsonShareBtn" onclick="shareJson()" style="display: none; margin-top: 10px; background-color: #8b5cf6;">
+        Copy JSON
+    </button>
+</div>
+
+<script>
+    function addPortfolioRow(amount = '', rate = '', risk = '') {
+        const container = document.getElementById('portfolio-list');
+        const div = document.createElement('div');
+        div.className = 'portfolio-row';
+        div.innerHTML = `
+            <div class="input-wrapper">
+                <span>$</span>
+                <input type="number" class="p-amount" placeholder="Amount" value="${amount}" oninput="calculateRunway()">
+            </div>
+            <div class="input-wrapper percent">
+                <span>%</span>
+                <input type="number" class="p-rate" placeholder="Ret." value="${rate}" step="0.1" title="Annual Return" oninput="calculateRunway()">
+            </div>
+            <div class="input-wrapper percent">
+                <span>±%</span>
+                <input type="number" class="p-risk" placeholder="Var." value="${risk}" step="0.1" title="Variability/Risk Margin" oninput="calculateRunway()">
+            </div>
+            <button class="remove-btn" onclick="removePortfolioRow(this)" title="Remove Portfolio">×</button>
+        `;
+        container.appendChild(div);
+        calculateRunway();
+    }
+
+    function removePortfolioRow(btn) {
+        btn.parentElement.remove();
+        calculateRunway();
+    }
+
+    function calculateRunway() {
+        // 1. Get Inputs
+        const amounts = document.querySelectorAll('.p-amount');
+        const rates = document.querySelectorAll('.p-rate');
+        const risks = document.querySelectorAll('.p-risk');
+        
+        let totalBalance = 0;
+        let weightedReturnSum = 0;
+        let weightedRiskSum = 0;
+
+        amounts.forEach((input, index) => {
+            const val = parseFloat(input.value) || 0;
+            const rate = parseFloat(rates[index].value) || 0;
+            const risk = parseFloat(risks[index].value) || 0;
+            
+            totalBalance += val;
+            weightedReturnSum += val * rate;
+            weightedRiskSum += val * risk;
+        });
+
+        // Calculate weighted averages
+        const avgAnnualReturn = totalBalance > 0 ? (weightedReturnSum / totalBalance) : 0;
+        const avgRisk = totalBalance > 0 ? (weightedRiskSum / totalBalance) : 0;
+
+        // Update Summary UI
+        const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+        document.getElementById('displayTotalSavings').innerText = formatter.format(totalBalance);
+        document.getElementById('displayAvgReturn').innerText = avgAnnualReturn.toFixed(2) + '%';
+        document.getElementById('displayAvgRisk').innerText = avgRisk.toFixed(2) + '%';
+
+        let monthlySpend = parseFloat(document.getElementById('expenses').value);
+        const annualInflation = parseFloat(document.getElementById('inflation').value) / 100;
+
+        if (totalBalance <= 0 || isNaN(monthlySpend) || isNaN(annualInflation)) {
+            document.getElementById('resultsArea').style.display = 'none';
+            document.getElementById('shareBtn').style.display = 'none';
+            document.getElementById('jsonShareBtn').style.display = 'none';
+            return;
+        }
+
+        // 2. Run Simulations
+        const runSim = (returnRatePct) => {
+            const annualReturnDecimal = returnRatePct / 100;
+            const monthlyReturnRate = Math.pow(1 + annualReturnDecimal, 1/12) - 1;
+            const monthlyInflationRate = Math.pow(1 + annualInflation, 1/12) - 1;
+            
+            let balance = totalBalance;
+            let monthsPassed = 0;
+            let currentSpend = monthlySpend;
+            
+            const MAX_YEARS = 100; 
+            const MAX_MONTHS = MAX_YEARS * 12;
+
+            while (balance > 0) {
+                balance += balance * monthlyReturnRate;
+                balance -= currentSpend;
+                currentSpend += currentSpend * monthlyInflationRate;
+                monthsPassed++;
+
+                if (monthsPassed > MAX_MONTHS) return Infinity;
+            }
+            return monthsPassed;
+        };
+
+        const monthsExp = runSim(avgAnnualReturn);
+        const monthsPess = runSim(avgAnnualReturn - avgRisk);
+        const monthsOpt = runSim(avgAnnualReturn + avgRisk);
+
+        // 3. Format Results
+        const resultsArea = document.getElementById('resultsArea');
+        const shareBtn = document.getElementById('shareBtn');
+        const jsonShareBtn = document.getElementById('jsonShareBtn');
+        
+        resultsArea.style.display = 'block';
+        shareBtn.style.display = 'block';
+        jsonShareBtn.style.display = 'block';
+
+        const formatMonths = (m) => {
+            if (m === Infinity) return "Forever";
+            if (m === 0) return "0y";
+            const y = Math.floor(m / 12);
+            const remM = m % 12;
+            if (y > 90) return ">90y";
+            return `${y}y ${remM}m`;
+        };
+
+        document.getElementById('resExpected').innerText = formatMonths(monthsExp);
+        document.getElementById('resPessimistic').innerText = formatMonths(monthsPess);
+        document.getElementById('resOptimistic').innerText = formatMonths(monthsOpt);
+
+        // Details text based on Expected
+        const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+        const detailsText = document.getElementById('detailsText');
+        
+        if (monthsExp === Infinity) {
+             detailsText.innerText = "With expected returns, your capital preserves itself indefinitely.";
+        } else {
+             // Calculate future expense
+             const futureMonthlySpend = monthlySpend * Math.pow(1 + annualInflation, monthsExp/12);
+             detailsText.innerText = `In the expected scenario, you run out in ${formatMonths(monthsExp)}. By then, inflation will raise your monthly needs to ${currencyFormatter.format(futureMonthlySpend)}.`;
+        }
+    }
+
+    function shareJson() {
+        const expenses = document.getElementById('expenses').value;
+        const inflation = document.getElementById('inflation').value;
+        
+        const amounts = document.querySelectorAll('.p-amount');
+        const rates = document.querySelectorAll('.p-rate');
+        const risks = document.querySelectorAll('.p-risk');
+        
+        let portfolios = [];
+        amounts.forEach((input, index) => {
+            const val = input.value;
+            const rate = rates[index].value;
+            const risk = risks[index].value;
+            if (val || rate) {
+                portfolios.push({
+                    amount: parseFloat(val) || 0,
+                    return: parseFloat(rate) || 0,
+                    risk: parseFloat(risk) || 0
+                });
+            }
+        });
+
+        const data = {
+            monthlyExpenses: parseFloat(expenses) || 0,
+            annualInflation: parseFloat(inflation) || 0,
+            portfolios: portfolios,
+            timestamp: new Date().toISOString()
+        };
+
+        const jsonStr = JSON.stringify(data, null, 2);
+        
+        navigator.clipboard.writeText(jsonStr).then(() => {
+            const btn = document.getElementById('jsonShareBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "JSON Copied!";
+            setTimeout(() => btn.innerText = originalText, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert("Could not copy JSON to clipboard.");
+        });
+    }
+
+    function shareResults() {
+        const expenses = document.getElementById('expenses').value;
+        const inflation = document.getElementById('inflation').value;
+        
+        // Serialize portfolios
+        const amounts = document.querySelectorAll('.p-amount');
+        const rates = document.querySelectorAll('.p-rate');
+        const risks = document.querySelectorAll('.p-risk');
+        
+        let portfolios = [];
+        amounts.forEach((input, index) => {
+            const val = input.value;
+            const rate = rates[index].value;
+            const risk = risks[index].value;
+            if (val || rate) {
+                // Format: amount:rate:risk
+                portfolios.push(`${val}:${rate}:${risk || 0}`);
+            }
+        });
+
+        const params = new URLSearchParams();
+        if(portfolios.length > 0) params.set('p', portfolios.join('|'));
+        if(expenses) params.set('e', expenses);
+        if(inflation) params.set('i', inflation);
+
+        const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState({}, '', newUrl);
+        
+        navigator.clipboard.writeText(newUrl).then(() => {
+            const btn = document.getElementById('shareBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "Link Copied!";
+            setTimeout(() => btn.innerText = originalText, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert("Could not copy link to clipboard. URL has been updated in address bar.");
+        });
+    }
+
+    function toggleImport() {
+        const el = document.getElementById('importArea');
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function applyJson() {
+        try {
+            const jsonStr = document.getElementById('jsonInput').value;
+            const data = JSON.parse(jsonStr);
+            
+            if (data.monthlyExpenses) document.getElementById('expenses').value = data.monthlyExpenses;
+            if (data.annualInflation) document.getElementById('inflation').value = data.annualInflation;
+            
+            if (data.portfolios && Array.isArray(data.portfolios)) {
+                document.getElementById('portfolio-list').innerHTML = ''; // Clear existing
+                data.portfolios.forEach(p => {
+                    addPortfolioRow(p.amount, p.return, p.risk);
+                });
+            }
+            
+            calculateRunway();
+            toggleImport();
+            alert('Portfolio updated successfully!');
+        } catch (e) {
+            alert('Invalid JSON format');
+            console.error(e);
+        }
+    }
+
+    function loadFromParams() {
+        const params = new URLSearchParams(window.location.search);
+        let hasData = false;
+        
+        // Legacy support (s=savings, r=rate)
+        if (params.has('s') || params.has('r')) {
+            const s = params.get('s') || '';
+            const r = params.get('r') || '';
+            addPortfolioRow(s, r, '0');
+            hasData = true;
+        }
+        
+        // New format
+        if (params.has('p')) {
+            document.getElementById('portfolio-list').innerHTML = '';
+            const pStr = params.get('p');
+            const portfolios = pStr.split('|');
+            portfolios.forEach(p => {
+                const parts = p.split(':');
+                const amount = parts[0];
+                const rate = parts[1];
+                const risk = parts[2] || '0'; // Default risk to 0 if missing
+                addPortfolioRow(amount, rate, risk);
+            });
+            hasData = true;
+        }
+
+        if (!hasData) {
+            // Add one empty row by default with example risk
+            addPortfolioRow('500000', '6', '2');
+        }
+
+        if (params.has('e')) { document.getElementById('expenses').value = params.get('e'); }
+        if (params.has('i')) { document.getElementById('inflation').value = params.get('i'); }
+        
+        calculateRunway();
+    }
+
+    // Initialize
+    loadFromParams();
+
+</script>
+
+</body>
+</html>
