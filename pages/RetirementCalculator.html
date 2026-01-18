@@ -66,7 +66,7 @@
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            max-width: 500px;
+            max-width: 900px;
             width: 100%;
         }
 
@@ -231,19 +231,42 @@
         }
 
         /* Portfolio List Styles */
+        .portfolio-header {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text);
+            padding-right: 42px; /* Offset for the remove button width */
+        }
+        .portfolio-header > div {
+            text-align: center;
+        }
+        .portfolio-header > div:nth-child(1) { flex: 1.5; text-align: left; } /* Brand */
+        .portfolio-header > div:nth-child(2) { flex: 1.2; text-align: left; } /* Type */
+        .portfolio-header > div:nth-child(3) { flex: 1.2; } /* Amount */
+        .portfolio-header > div:nth-child(4) { flex: 0.8; } /* Return */
+        .portfolio-header > div:nth-child(5) { flex: 0.8; } /* Risk */
+        .portfolio-header > div:nth-child(6) { flex: 0.8; } /* Upside */
+
         .portfolio-row {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             margin-bottom: 10px;
             align-items: center;
         }
         .portfolio-row .input-wrapper {
             flex: 1;
         }
-        /* Adjust flex for 3 inputs */
-        .portfolio-row .input-wrapper:nth-child(1) { flex: 1.2; } /* Amount */
-        .portfolio-row .input-wrapper:nth-child(2) { flex: 0.8; } /* Return */
-        .portfolio-row .input-wrapper:nth-child(3) { flex: 0.8; } /* Risk */
+        /* Adjust flex for inputs */
+        .portfolio-row .input-wrapper:nth-child(1) { flex: 1.5; } /* Brand */
+        .portfolio-row .input-wrapper:nth-child(2) { flex: 1.2; } /* Product Type */
+        .portfolio-row .input-wrapper:nth-child(3) { flex: 1.2; } /* Amount */
+        .portfolio-row .input-wrapper:nth-child(4) { flex: 0.8; } /* Return */
+        .portfolio-row .input-wrapper:nth-child(5) { flex: 0.8; } /* Risk */
+        .portfolio-row .input-wrapper:nth-child(6) { flex: 0.8; } /* Upside */
+        
         .remove-btn {
             background: var(--danger);
             width: auto;
@@ -285,7 +308,14 @@
     <p class="subtitle">If you quit today, how long until you hit $0?</p>
 
     <div class="input-group">
-        <label>Portfolios (Amount | Return | Variability)</label>
+        <div class="portfolio-header">
+            <div>Brand</div>
+            <div>Type</div>
+            <div>Amount</div>
+            <div>Return</div>
+            <div>Risk</div>
+            <div>Upside</div>
+        </div>
         <div id="portfolio-list">
             <!-- Dynamic rows go here -->
         </div>
@@ -303,9 +333,38 @@
         </div>
     </div>
 
+    <!-- New Optimization Section -->
+    <div class="input-group" style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+        <label>Portfolio Optimization</label>
+        <p class="subtitle" style="text-align: left; margin-bottom: 10px; font-size: 0.85rem;">Rebalance your assets to maximize safety or returns.</p>
+        
+        <div style="margin-bottom: 10px;">
+            <label style="font-weight: normal; font-size: 0.85rem;">Optimization Goal</label>
+            <select id="optimizationGoal" style="width: 100%; padding: 10px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--input-border); border-radius: 6px;">
+                <option value="optimize_pessimistic">Maximize Runway (Pessimistic Scenario)</option>
+                <option value="optimize_expected">Maximize Runway (Expected Scenario)</option>
+                <option value="optimize_optimistic">Maximize Runway (Optimistic Scenario)</option>
+            </select>
+        </div>
+        
+        <button onclick="optimizePortfolio()" style="background-color: #0ea5e9;">Suggest Better Allocation</button>
+        
+        <div id="optimizationResults" style="display: none; margin-top: 15px; padding: 15px; background: var(--input-bg); border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="font-weight: bold; margin-bottom: 10px; color: var(--primary);">Suggested Allocation</div>
+            <div id="suggestedAllocationList" style="font-size: 0.9rem; margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px;"></div>
+            
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                <div>New Avg Return: <strong id="optReturn" style="color: var(--text);"></strong></div>
+                <div>New Risk: <strong id="optRisk" style="color: var(--text);"></strong></div>
+            </div>
+            
+            <button onclick="applyOptimization()" style="background-color: var(--primary); font-size: 0.9rem; padding: 10px;">Apply This Allocation</button>
+        </div>
+    </div>
+
     <div class="summary-row">
         <span>Total: <strong id="displayTotalSavings">$0</strong></span>
-        <span>Avg Return: <strong id="displayAvgReturn">0%</strong> (±<span id="displayAvgRisk">0%</span>)</span>
+        <span>Avg Return: <strong id="displayAvgReturn">0%</strong> (<span id="displayAvgRisk">0%</span>)</span>
     </div>
 
     <div class="input-group">
@@ -354,11 +413,17 @@
 </div>
 
 <script>
-    function addPortfolioRow(amount = '', rate = '', risk = '') {
+    function addPortfolioRow(brand = '', type = '', amount = '', rate = '', risk = '', upside = '') {
         const container = document.getElementById('portfolio-list');
         const div = document.createElement('div');
         div.className = 'portfolio-row';
         div.innerHTML = `
+            <div class="input-wrapper">
+                <input type="text" class="p-brand" placeholder="Brand" value="${brand}" oninput="calculateRunway()">
+            </div>
+            <div class="input-wrapper">
+                <input type="text" class="p-type" placeholder="Type" value="${type}" oninput="calculateRunway()">
+            </div>
             <div class="input-wrapper">
                 <span>$</span>
                 <input type="number" class="p-amount" placeholder="Amount" value="${amount}" oninput="calculateRunway()">
@@ -368,8 +433,12 @@
                 <input type="number" class="p-rate" placeholder="Ret." value="${rate}" step="0.1" title="Annual Return" oninput="calculateRunway()">
             </div>
             <div class="input-wrapper percent">
-                <span>±%</span>
-                <input type="number" class="p-risk" placeholder="Var." value="${risk}" step="0.1" title="Variability/Risk Margin" oninput="calculateRunway()">
+                <span>-%</span>
+                <input type="number" class="p-risk" placeholder="Risk" value="${risk}" step="0.1" title="Downside Risk" oninput="calculateRunway()">
+            </div>
+            <div class="input-wrapper percent">
+                <span>+%</span>
+                <input type="number" class="p-upside" placeholder="Gap" value="${upside}" step="0.1" title="Non-Guaranteed Gap (Upside)" oninput="calculateRunway()">
             </div>
             <button class="remove-btn" onclick="removePortfolioRow(this)" title="Remove Portfolio">×</button>
         `;
@@ -387,30 +456,35 @@
         const amounts = document.querySelectorAll('.p-amount');
         const rates = document.querySelectorAll('.p-rate');
         const risks = document.querySelectorAll('.p-risk');
+        const upsides = document.querySelectorAll('.p-upside');
         
         let totalBalance = 0;
         let weightedReturnSum = 0;
         let weightedRiskSum = 0;
+        let weightedUpsideSum = 0;
 
         amounts.forEach((input, index) => {
             const val = parseFloat(input.value) || 0;
             const rate = parseFloat(rates[index].value) || 0;
             const risk = parseFloat(risks[index].value) || 0;
+            const upside = parseFloat(upsides[index].value) || 0;
             
             totalBalance += val;
             weightedReturnSum += val * rate;
             weightedRiskSum += val * risk;
+            weightedUpsideSum += val * upside;
         });
 
         // Calculate weighted averages
         const avgAnnualReturn = totalBalance > 0 ? (weightedReturnSum / totalBalance) : 0;
         const avgRisk = totalBalance > 0 ? (weightedRiskSum / totalBalance) : 0;
+        const avgUpside = totalBalance > 0 ? (weightedUpsideSum / totalBalance) : 0;
 
         // Update Summary UI
         const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
         document.getElementById('displayTotalSavings').innerText = formatter.format(totalBalance);
         document.getElementById('displayAvgReturn').innerText = avgAnnualReturn.toFixed(2) + '%';
-        document.getElementById('displayAvgRisk').innerText = avgRisk.toFixed(2) + '%';
+        document.getElementById('displayAvgRisk').innerText = '-' + avgRisk.toFixed(2) + '% / +' + avgUpside.toFixed(2) + '%';
 
         let monthlySpend = parseFloat(document.getElementById('expenses').value);
         const annualInflation = parseFloat(document.getElementById('inflation').value) / 100;
@@ -448,7 +522,7 @@
 
         const monthsExp = runSim(avgAnnualReturn);
         const monthsPess = runSim(avgAnnualReturn - avgRisk);
-        const monthsOpt = runSim(avgAnnualReturn + avgRisk);
+        const monthsOpt = runSim(avgAnnualReturn + avgUpside);
 
         // 3. Format Results
         const resultsArea = document.getElementById('resultsArea');
@@ -489,20 +563,30 @@
         const expenses = document.getElementById('expenses').value;
         const inflation = document.getElementById('inflation').value;
         
+        const brands = document.querySelectorAll('.p-brand');
+        const types = document.querySelectorAll('.p-type');
         const amounts = document.querySelectorAll('.p-amount');
         const rates = document.querySelectorAll('.p-rate');
         const risks = document.querySelectorAll('.p-risk');
+        const upsides = document.querySelectorAll('.p-upside');
         
         let portfolios = [];
         amounts.forEach((input, index) => {
             const val = input.value;
             const rate = rates[index].value;
             const risk = risks[index].value;
+            const upside = upsides[index].value;
+            const brand = brands[index].value;
+            const type = types[index].value;
+
             if (val || rate) {
                 portfolios.push({
+                    brand: brand || '',
+                    type: type || '',
                     amount: parseFloat(val) || 0,
                     return: parseFloat(rate) || 0,
-                    risk: parseFloat(risk) || 0
+                    risk: parseFloat(risk) || 0,
+                    upside: parseFloat(upside) || 0
                 });
             }
         });
@@ -532,18 +616,28 @@
         const inflation = document.getElementById('inflation').value;
         
         // Serialize portfolios
+        const brands = document.querySelectorAll('.p-brand');
+        const types = document.querySelectorAll('.p-type');
         const amounts = document.querySelectorAll('.p-amount');
         const rates = document.querySelectorAll('.p-rate');
         const risks = document.querySelectorAll('.p-risk');
+        const upsides = document.querySelectorAll('.p-upside');
         
         let portfolios = [];
         amounts.forEach((input, index) => {
             const val = input.value;
             const rate = rates[index].value;
             const risk = risks[index].value;
+            const upside = upsides[index].value;
+            const brand = brands[index].value;
+            const type = types[index].value;
+
             if (val || rate) {
-                // Format: amount:rate:risk
-                portfolios.push(`${val}:${rate}:${risk || 0}`);
+                // Format: brand:type:amount:rate:risk:upside
+                // Encode brand and type to handle special chars
+                const b = encodeURIComponent(brand || '');
+                const t = encodeURIComponent(type || '');
+                portfolios.push(`${b}:${t}:${val}:${rate}:${risk || 0}:${upside || 0}`);
             }
         });
 
@@ -582,7 +676,7 @@
             if (data.portfolios && Array.isArray(data.portfolios)) {
                 document.getElementById('portfolio-list').innerHTML = ''; // Clear existing
                 data.portfolios.forEach(p => {
-                    addPortfolioRow(p.amount, p.return, p.risk);
+                    addPortfolioRow(p.brand, p.type, p.amount, p.return, p.risk, p.upside);
                 });
             }
             
@@ -603,7 +697,7 @@
         if (params.has('s') || params.has('r')) {
             const s = params.get('s') || '';
             const r = params.get('r') || '';
-            addPortfolioRow(s, r, '0');
+            addPortfolioRow('', '', s, r, '0', '0');
             hasData = true;
         }
         
@@ -614,23 +708,238 @@
             const portfolios = pStr.split('|');
             portfolios.forEach(p => {
                 const parts = p.split(':');
-                const amount = parts[0];
-                const rate = parts[1];
-                const risk = parts[2] || '0'; // Default risk to 0 if missing
-                addPortfolioRow(amount, rate, risk);
+                if (parts.length >= 6) {
+                    // New format: brand:type:amount:rate:risk:upside
+                    const brand = decodeURIComponent(parts[0]);
+                    const type = decodeURIComponent(parts[1]);
+                    const amount = parts[2];
+                    const rate = parts[3];
+                    const risk = parts[4];
+                    const upside = parts[5];
+                    addPortfolioRow(brand, type, amount, rate, risk, upside);
+                } else {
+                    // Old format: amount:rate:risk
+                    const amount = parts[0];
+                    const rate = parts[1];
+                    const risk = parts[2] || '0';
+                    addPortfolioRow('', '', amount, rate, risk, risk);
+                }
             });
             hasData = true;
         }
 
         if (!hasData) {
             // Add one empty row by default with example risk
-            addPortfolioRow('500000', '6', '2');
+            addPortfolioRow('Example Brand', 'Stock', '500000', '6', '20', '20');
         }
 
         if (params.has('e')) { document.getElementById('expenses').value = params.get('e'); }
         if (params.has('i')) { document.getElementById('inflation').value = params.get('i'); }
         
         calculateRunway();
+    }
+
+    // --- Optimization Logic ---
+
+    let bestAllocation = null;
+    let bestScore = -Infinity;
+    let bestReturn = -Infinity;
+
+    function optimizePortfolio() {
+        const brands = document.querySelectorAll('.p-brand');
+        const types = document.querySelectorAll('.p-type');
+        const amounts = document.querySelectorAll('.p-amount');
+        const rates = document.querySelectorAll('.p-rate');
+        const risks = document.querySelectorAll('.p-risk');
+        const upsides = document.querySelectorAll('.p-upside');
+        
+        let assets = [];
+        let totalAmount = 0;
+        
+        amounts.forEach((input, index) => {
+            const val = parseFloat(input.value) || 0;
+            const rate = parseFloat(rates[index].value) || 0;
+            const risk = parseFloat(risks[index].value) || 0;
+            const upside = parseFloat(upsides[index].value) || 0;
+            const brand = brands[index].value || `Portfolio ${index + 1}`;
+            const type = types[index].value || '';
+            totalAmount += val;
+            assets.push({ id: index, currentAmount: val, return: rate, risk: risk, upside: upside, brand: brand, type: type });
+        });
+
+        if (totalAmount === 0 || assets.length === 0) {
+            alert("Please add portfolios with amounts first.");
+            return;
+        }
+
+        const goal = document.getElementById('optimizationGoal').value;
+        
+        // Reset bests
+        bestAllocation = null;
+        bestScore = -Infinity; 
+        bestReturn = -Infinity;
+
+        // Dynamic step size to prevent browser hang on many assets
+        const numAssets = assets.length;
+        let step = 5; 
+        if (numAssets > 6) {
+            step = 10;
+            console.warn("Using coarse grid for speed");
+        }
+        
+        function search(index, currentWeights) {
+            if (index === assets.length - 1) {
+                // Last asset gets the remainder
+                let sum = currentWeights.reduce((a, b) => a + b, 0);
+                let remainder = 100 - sum;
+                if (remainder < 0) return; 
+                
+                const weights = [...currentWeights, remainder];
+                evaluate(weights);
+                return;
+            }
+
+            let currentSum = currentWeights.reduce((a, b) => a + b, 0);
+            let remaining = 100 - currentSum;
+
+            for (let w = 0; w <= remaining; w += step) {
+                search(index + 1, [...currentWeights, w]);
+            }
+        }
+
+        function runSimForAllocation(annualReturnPct) {
+            const monthlySpend = parseFloat(document.getElementById('expenses').value) || 0;
+            const annualInflation = parseFloat(document.getElementById('inflation').value) / 100 || 0;
+            if (monthlySpend <= 0) return 0;
+
+            const monthlyReturnRate = Math.pow(1 + annualReturnPct / 100, 1/12) - 1;
+            const monthlyInflationRate = Math.pow(1 + annualInflation, 1/12) - 1;
+
+            let balance = totalAmount; 
+            let monthsPassed = 0;
+            let currentSpend = monthlySpend;
+            const MAX_MONTHS = 100 * 12;
+
+            while (balance > 0 && monthsPassed < MAX_MONTHS) {
+                balance += balance * monthlyReturnRate;
+                balance -= currentSpend;
+                currentSpend += currentSpend * monthlyInflationRate;
+                monthsPassed++;
+            }
+
+            return balance > 0 ? Infinity : monthsPassed;
+        }
+
+        function evaluate(weights) {
+            let portfolioReturn = 0;
+            let portfolioRisk = 0;
+            let portfolioUpside = 0;
+
+            weights.forEach((w, i) => {
+                let weightDec = w / 100;
+                portfolioReturn += weightDec * assets[i].return;
+                portfolioRisk += weightDec * assets[i].risk;
+                portfolioUpside += weightDec * assets[i].upside;
+            });
+
+            let effectiveReturn;
+            if (goal === 'optimize_pessimistic') {
+                effectiveReturn = portfolioReturn - portfolioRisk;
+            } else if (goal === 'optimize_expected') {
+                effectiveReturn = portfolioReturn;
+            } else if (goal === 'optimize_optimistic') {
+                effectiveReturn = portfolioReturn + portfolioUpside;
+            } else {
+                effectiveReturn = portfolioReturn;
+            }
+
+            const months = runSimForAllocation(effectiveReturn);
+            let score = months;
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestReturn = effectiveReturn;
+                bestAllocation = weights.slice();
+            } else if (score === bestScore && score === Infinity) {
+                // Tie-breaker: if both are infinite, prefer higher return for that scenario
+                if (effectiveReturn > bestReturn) {
+                    bestReturn = effectiveReturn;
+                    bestAllocation = weights.slice();
+                }
+            }
+        }
+
+        // Start search
+        // If only 1 asset, no optimization needed really, but logic holds
+        search(0, []);
+
+        // Display results
+        if (bestAllocation) {
+            displayOptimizationResults(assets, bestAllocation, totalAmount);
+        }
+    }
+
+    function displayOptimizationResults(assets, weights, totalAmount) {
+        const container = document.getElementById('optimizationResults');
+        const list = document.getElementById('suggestedAllocationList');
+        const optReturn = document.getElementById('optReturn');
+        const optRisk = document.getElementById('optRisk');
+        
+        container.style.display = 'block';
+        list.innerHTML = '';
+        
+        let newReturn = 0;
+        let newRisk = 0;
+        let newUpside = 0;
+
+        assets.forEach((asset, i) => {
+            const w = weights[i];
+            const amount = totalAmount * (w / 100);
+            
+            // Only show if weight > 0 to keep list clean? 
+            // Or show all to be explicit. Let's show all but maybe dim 0s.
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.justifyContent = 'space-between';
+            div.style.padding = '4px 0';
+            if (w === 0) div.style.color = 'var(--text-muted)';
+            
+            div.innerHTML = `
+                <span>${asset.brand} ${asset.type} (${asset.return}% / -${asset.risk}% / +${asset.upside}%)</span>
+                <span><strong>${w}%</strong> ($${Math.round(amount).toLocaleString()})</span>
+            `;
+            list.appendChild(div);
+            
+            newReturn += (w/100) * asset.return;
+            newRisk += (w/100) * asset.risk;
+            newUpside += (w/100) * asset.upside;
+        });
+
+        optReturn.innerText = newReturn.toFixed(2) + '%';
+        optRisk.innerText = '-' + newRisk.toFixed(2) + '% / +' + newUpside.toFixed(2) + '%';
+        
+        // Store for apply
+        window.pendingAllocation = weights.map((w, i) => ({
+            index: i,
+            amount: totalAmount * (w / 100)
+        }));
+    }
+
+    function applyOptimization() {
+        if (!window.pendingAllocation) return;
+        
+        const amounts = document.querySelectorAll('.p-amount');
+        window.pendingAllocation.forEach(item => {
+            if (amounts[item.index]) {
+                amounts[item.index].value = Math.round(item.amount);
+            }
+        });
+        
+        calculateRunway();
+        document.getElementById('optimizationResults').style.display = 'none';
+        
+        // Scroll to top to see changes
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // Initialize
